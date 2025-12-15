@@ -1,0 +1,50 @@
+import random
+import datetime
+
+FILE = "echoes.txt"
+
+def save_message(text, mood):
+    time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    with open(FILE, "a") as f:
+        f.write(f"{time}|{mood}|{text}\n")
+
+def get_random_echo():
+    try:
+        with open(FILE, "r") as f:
+            lines = f.readlines()
+            if not lines:
+                return None
+            return random.choice(lines)
+    except FileNotFoundError:
+        return None
+
+def remix(text):
+    words = text.split()
+    random.shuffle(words)
+    return " ".join(words)
+
+print("\n--- Digital Echo ---\n")
+choice = input("Write (w) or Listen (l)? ").lower()
+
+if choice == "w":
+    mood = input("Your mood: ")
+    text = input("Your message: ")
+    save_message(text, mood)
+    print("Your echo has been saved.")
+
+elif choice == "l":
+    echo = get_random_echo()
+    if echo:
+        _, mood, text = echo.strip().split("|")
+        print("\nYour past self whispers:")
+        print(f"\"{remix(text)}\"")
+        print(f"(Mood then: {mood})")
+    else:
+        print("No echoes yet. Write something first.")
+
+else:
+    print("Invalid choice.")
+
+
+
+
